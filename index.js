@@ -50,13 +50,9 @@ app.get("/callback", async (req,res) => {
     } catch (error) {
         console.error("Failed to make request:", error.message);
     }
-    
-    
+       
     
 })
-
-
-
 
 app.listen(port, () => {
     console.log(`Server running on port: ${port}`);
