@@ -1,9 +1,22 @@
-import express, { response } from "express";
+import express from "express";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
 
 const app = express();
 const port = 3000;
+
+function loadEnv() {
+    dotenv.config();
+}
+loadEnv();
+//console.log(process.env)
+
+const clientID = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+console.log(clientID);
+console.log(clientSecret);
+
 
 app.get("/", async (req,res) => {
     try {
@@ -13,14 +26,14 @@ app.get("/", async (req,res) => {
     }
 })
 
-
 app.get("/callback", async (req,res) => {
     let response;
+
     try {
         //console.log(req.url);
         const data = {
-            'client_id' : "785063509436-g8mndonltkiu96389khhslvskfljrsm5.apps.googleusercontent.com",
-            'client_secret' : "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",
+            'client_id' : clientID,
+            'client_secret' : clientSecret,
             'redirect_uri' : "http://localhost:3000/callback",
             'code' : req.query.code,
             'grant_type' : "authorization_code"
@@ -42,7 +55,7 @@ app.get("/callback", async (req,res) => {
 
             if(response.status === 200){
                 //res.status(200);
-                res.render("mailbox.ejs",{name:user_email});
+                res.render("dashboard.ejs",{name:user_email});
                 
             }else{
                 res.status(500);
@@ -50,10 +63,9 @@ app.get("/callback", async (req,res) => {
     } catch (error) {
         console.error("Failed to make request:", error.message);
     }
-       
     
 })
 
 app.listen(port, () => {
     console.log(`Server running on port: ${port}`);
-  });
+});
